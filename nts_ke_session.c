@@ -644,7 +644,7 @@ NKSN_CreateCertCredentials(char *cert, char *key, char *trusted_certs)
   int r;
 
   init_gnutls();
-
+  LOG(LOGS_ERR, "cert and key %s %s", cert, key);
   r = gnutls_certificate_allocate_credentials(&credentials);
   if (r < 0) {
 	LOG(LOGS_ERR, "failed to allocate credentials");
