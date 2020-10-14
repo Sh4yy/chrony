@@ -646,19 +646,26 @@ NKSN_CreateCertCredentials(char *cert, char *key, char *trusted_certs)
   init_gnutls();
 
   r = gnutls_certificate_allocate_credentials(&credentials);
-  if (r < 0)
-    goto error;
+  if (r < 0) {
+	LOG(LOGS_ERR, "failed to allocate credentials");
+	goto error;
+  }
 
   if (cert && key) {
     r = gnutls_certificate_set_x509_key_file(credentials, cert, key,
                                              GNUTLS_X509_FMT_PEM);
-    if (r < 0)
-      goto error;
-  } else {
+    if (r < 0) {
+	LOG(LOGS_ERR, "failed to set cert key file");
+	goto error;
+    }
+
+    } else {
     if (!CNF_GetNoSystemCert()) {
       r = gnutls_certificate_set_x509_system_trust(credentials);
-      if (r < 0)
-        goto error;
+      if (r < 0) {
+        LOG(LOGS_ERR, "failed to set trust");
+	goto error;
+	}
     }
 
     if (trusted_certs) {
